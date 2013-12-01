@@ -1,0 +1,50 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+@section scripts{
+    <script src="~/signalr/hubs"></script>
+    @Scripts.Render("~/bundles/chat")
+
+    <script type="text/javascript">
+        //chatViewModel = new OnlineChat.Chat();
+
+        //myViewModel = {
+        //    personName: ko.observable('Bob'),
+        //    personAge: ko.observable(123)
+        //};
+
+        ko.applyBindings(new OnlineChat.Chat());
+    </script>
+}
+@section featured {
+    <section class="featured">
+        <div class="content-wrapper">
+            <hgroup class="title">
+                <h1>@ViewBag.Title.</h1>
+                <h2>@ViewBag.Message</h2>
+            </hgroup>
+            <p>
+                To learn more about ASP.NET MVC visit
+                <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
+                The page features <mark>videos, tutorials, and samples</mark> to help you get the most from ASP.NET MVC.
+                If you have any questions about ASP.NET MVC visit
+                <a href="http://forums.asp.net/1146.aspx/1?MVC" title="ASP.NET MVC Forum">our forums</a>.
+            </p>
+        </div>
+    </section>
+}
+<h3>Chat</h3>
+
+<ul class="messageList" data-bind="foreach: messages">
+    <li class="message" data-bind="css:{'message--right': User === 'jasonquinn', 'message--left': User !== 'jasonquinn'}">
+        <p class="message_text" data-bind="text: Text"></p>
+        <div class="message_details">
+            <small class="message_username" data-bind="text: User"></small>&nbsp;&bull;
+            <small class="message_time " data-bind="text: Time"></small>
+        </div>
+
+    </li>
+</ul>
+
+<textarea class="form-control" rows="3" placeholder="Send a message" data-bind="value: text, valueUpdate: 'afterkeydown', returnAction: function(){ $data.sendMessage() }"></textarea>
+<button type="button" class="btn btn-default" data-bind="click: function(){ $data.sendMessage() }">Send</button>
