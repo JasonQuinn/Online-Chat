@@ -10,9 +10,6 @@ var OnlineChat;
             this.text = ko.observable("");
             this._chatHubProxy = ($.connection).chatHub;
 
-            //chatHubProxy.server.GetAllMessages = function (name, message) {
-            //    console.log(name + ' ' + message);
-            //};
             $.connection.hub.start().done(function () {
                 // Wire up Send button to call NewContosoChatMessage on the server.
                 _this._chatHubProxy.server.getAllMessages().done(function (data) {
@@ -22,8 +19,6 @@ var OnlineChat;
                         }));
                     }
                 });
-
-                _this._chatHubProxy.server.newChatMessage("TestJason", "MessageTest");
             });
 
             this._chatHubProxy.client.addMessage = function (message) {

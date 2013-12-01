@@ -11,10 +11,6 @@ module OnlineChat {
         constructor() {
             this._chatHubProxy = (<any>$.connection).chatHub;
 
-
-            //chatHubProxy.server.GetAllMessages = function (name, message) {
-            //    console.log(name + ' ' + message);
-            //};
             $.connection.hub.start().done(() => {
                 // Wire up Send button to call NewContosoChatMessage on the server.
                 this._chatHubProxy.server.getAllMessages().done((data: IServerMessage[]) => {
@@ -24,9 +20,6 @@ module OnlineChat {
                         }));
                     }
                 });
-
-
-                this._chatHubProxy.server.newChatMessage("TestJason", "MessageTest");
             });
 
             this._chatHubProxy.client.addMessage = (message: IServerMessage) => {

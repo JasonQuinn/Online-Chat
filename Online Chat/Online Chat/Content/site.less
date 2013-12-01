@@ -733,6 +733,7 @@ tr.pager td {
 }
 
 .messageList {
+    padding: 0;
 
     .message {
         @messageBorderColor: #ccc;
@@ -754,10 +755,12 @@ tr.pager td {
 
         &::after {
             position: absolute;
+            display: inline-block;
             content: '';
         }
 
         &.message--right {
+            margin-left: 40px;
             margin-right: 10px;
             border-bottom-right-radius: 0;
 
@@ -772,13 +775,13 @@ tr.pager td {
             &::after {
                 right: -7px;
                 bottom: 0px;
-                display: inline-block;
                 border-top: 9px solid transparent;
                 border-left: 9px solid white;
             }
         }
 
         &.message--left {
+            margin-right: 40px;
             margin-left: 10px;
             border-top-left-radius: 0;
 
@@ -792,7 +795,6 @@ tr.pager td {
             &::after {
                 top: 0;
                 left: -7px;
-                display: inline-block;
                 border-right: 9px solid white;
                 border-bottom: 9px solid transparent;
             }
