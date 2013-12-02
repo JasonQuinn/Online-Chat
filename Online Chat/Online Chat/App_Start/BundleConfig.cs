@@ -31,7 +31,7 @@ namespace Online_Chat
                         ));
 
             bundles.Add(new ScriptBundle("~/bundles/chat").Include(
-                        "~/Scripts/Chat.js"
+                        "~/Scripts/Chat/Chat.js"
                         ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css"));

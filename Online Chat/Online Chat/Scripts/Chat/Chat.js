@@ -59,3 +59,4 @@ var OnlineChat;
     })();
     OnlineChat.ServerMessage = ServerMessage;
 })(OnlineChat || (OnlineChat = {}));
+//# sourceMappingURL=Chat.js.map
