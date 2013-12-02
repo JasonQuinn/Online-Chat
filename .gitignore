@@ -154,3 +154,7 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+/Online Chat/Online Chat/Scripts/Utils/CustomBindings.js.map
+/Online Chat/Online Chat/Scripts/Utils/CustomBindings.js
+/Online Chat/Online Chat/Scripts/Chat/Chat.js
+/Online Chat/Online Chat/Scripts/Chat/Chat.js.map
