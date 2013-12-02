@@ -405,12 +405,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\Chat\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="Scripts\Chat\Chat.ts" />
+    <TypeScriptCompile Include="Scripts\Chat.ts" />
     <TypeScriptCompile Include="Scripts\typings\jquery\jquery.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout\knockout.amd.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\knockout\knockout.d.ts" />
