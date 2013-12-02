@@ -8128,3 +8128,7 @@ tr.pager td {
 .messageList .message .message_details {
     color: #999999;
 }
+
+.messageList .message .message_text {
+    white-space: pre-wrap;
+}

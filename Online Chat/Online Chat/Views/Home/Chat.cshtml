@@ -1,7 +1,7 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-@*@section scripts{
+@section scripts{
     <script src="~/signalr/hubs"></script>
     @Scripts.Render("~/bundles/chat")
 
@@ -15,9 +15,11 @@
         var globalVariable = globalVariable || {};
         globalVariable.currentUser = '@ViewBag.CurrentUser';
 
-        ko.applyBindings(new OnlineChat.Chat());
+        var chatRoom = '@ViewBag.ChatRoom';
+
+        ko.applyBindings(new OnlineChat.Chat(chatRoom));
     </script>
-}*@
+}
 @section featured {
     <section class="featured">
         <div class="content-wrapper">
@@ -26,16 +28,20 @@
                 <h2>@ViewBag.Message</h2>
             </hgroup>
             <p>
-                <a href="@Url.Action("NewChat")">Create a new chat</a>
+                To learn more about ASP.NET MVC visit
+                <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
+                The page features <mark>videos, tutorials, and samples</mark> to help you get the most from ASP.NET MVC.
+                If you have any questions about ASP.NET MVC visit
+                <a href="http://forums.asp.net/1146.aspx/1?MVC" title="ASP.NET MVC Forum">our forums</a>.
             </p>
         </div>
     </section>
 }
 <h3>Chat</h3>
 
-@*<ul class="messageList" data-bind="foreach: messages">
+<ul class="messageList" data-bind="foreach: messages">
     <li class="message" data-bind="css:{'message--right': User === globalVariable.currentUser, 'message--left': User !== globalVariable.currentUser}">
-        <p class="message_text" data-bind="text: Text"></p>
+        <div class="message_text" data-bind="text: Text"></div>
         <div class="message_details">
             <small class="message_username" data-bind="text: User"></small>&nbsp;&bull;
             <small class="message_time " data-bind="prettyTime: Time"></small>
@@ -44,5 +50,5 @@
     </li>
 </ul>
 
-<textarea class="form-control" rows="3" placeholder="Send a message" data-bind="value: text, valueUpdate: 'afterkeydown', returnAction: function(){ $data.sendMessage() }"></textarea>
-<button type="button" class="btn btn-default" data-bind="click: function(){ $data.sendMessage() }">Send</button>*@
+<textarea class="form-control" rows="3" placeholder="Send a message" data-bind="value: text, valueUpdate: 'keyup', ctrlReturnAction: function(){ $data.sendMessage() }"></textarea>
+<button type="button" class="btn btn-default" data-bind="click: function(){ $data.sendMessage() }">Send</button>

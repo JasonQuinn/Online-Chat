@@ -10,24 +10,26 @@ namespace Online_Chat.Hubs
     {
         private static readonly ConcurrentDictionary<string, ChatRoom> Messages = new ConcurrentDictionary<string, ChatRoom>(StringComparer.OrdinalIgnoreCase);
 
-        public async Task NewChatMessage(string messageText)
+        public async Task NewChatMessage(Guid group, string messageText)
         {
             if (string.IsNullOrWhiteSpace(messageText))
             {
                 return;
             }
-            var owner = "owner";
+
+            await Groups.Add(Context.ConnectionId, group.ToString());
+            var owner = group.ToString();
             var message = new Message { User = Context.User.Identity.Name, Text = messageText.Trim(), Time = DateTime.Now };
-            Messages.GetOrAdd(owner, new ChatRoom());
-            Messages[owner].Messages.Add(message);
-            await Clients.All.addMessage(message);
+            var chatRoom = Messages.GetOrAdd(owner, new ChatRoom());
+            chatRoom.Messages.Add(message);
+            await Clients.Group(owner).addMessage(message);
         }
 
-        public IEnumerable<Message> GetAllMessages()
+        public IEnumerable<Message> GetAllMessages(Guid group)
         {
-            var owner = "owner";
+            Groups.Add(Context.ConnectionId, group.ToString());
             ChatRoom chatRoom;
-            return Messages.TryGetValue(owner, out chatRoom) ? Messages[owner].Messages : null;
+            return Messages.TryGetValue(group.ToString(), out chatRoom) ? chatRoom.Messages : null;
         }
     }
 

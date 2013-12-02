@@ -5,15 +5,17 @@ module OnlineChat {
     export class Chat {
         messages: KnockoutObservableArray<ServerMessage> = ko.observableArray();
         text = ko.observable("");
+        private _chatRoom: string;
 
         private _chatHubProxy;
         // Constructor
-        constructor() {
+        constructor(chatRoom: string) {
+            this._chatRoom = chatRoom;
             this._chatHubProxy = (<any>$.connection).chatHub;
-
+            
             $.connection.hub.start().done(() => {
                 // Wire up Send button to call NewContosoChatMessage on the server.
-                this._chatHubProxy.server.getAllMessages().done((data: IServerMessage[]) => {
+                this._chatHubProxy.server.getAllMessages(this._chatRoom).done((data: IServerMessage[]) => {
                     if (data !== undefined) {
                         this.messages(_.map(data, (message) => {
                             return ServerMessage.create(message);
@@ -30,14 +32,14 @@ module OnlineChat {
         public sendMessage() {
             var text = this.text();
 
-            this.text("");
+            this.text(null);
 
             function isNullOrWhiteSpace(str) {
                 return str === null || str.match(/^\s*$/) !== null;
             }
             if (_.isString(text) && !isNullOrWhiteSpace(text)) {
                 $.connection.hub.start().done(() => {
-                    this._chatHubProxy.server.newChatMessage(text);
+                    this._chatHubProxy.server.newChatMessage(this._chatRoom, text);
                 });
             }
 

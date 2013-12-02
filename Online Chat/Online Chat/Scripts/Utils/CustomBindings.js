@@ -13,6 +13,18 @@
         }
     };
 
+    tempKoHandlers.ctrlReturnAction = {
+        init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+            var value = ko.utils.unwrapObservable(valueAccessor());
+
+            $(element).keydown(function (e) {
+                if (e.which === 13 && e.ctrlKey === true) {
+                    value(viewModel);
+                }
+            });
+        }
+    };
+
     var getPrettyTime = function (date) {
         var today = new Date();
         var dateString = "";

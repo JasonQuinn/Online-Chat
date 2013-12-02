@@ -4,15 +4,16 @@ var OnlineChat;
     // Class
     var Chat = (function () {
         // Constructor
-        function Chat() {
+        function Chat(chatRoom) {
             var _this = this;
             this.messages = ko.observableArray();
             this.text = ko.observable("");
+            this._chatRoom = chatRoom;
             this._chatHubProxy = ($.connection).chatHub;
 
             $.connection.hub.start().done(function () {
                 // Wire up Send button to call NewContosoChatMessage on the server.
-                _this._chatHubProxy.server.getAllMessages().done(function (data) {
+                _this._chatHubProxy.server.getAllMessages(_this._chatRoom).done(function (data) {
                     if (data !== undefined) {
                         _this.messages(_.map(data, function (message) {
                             return ServerMessage.create(message);
@@ -29,14 +30,14 @@ var OnlineChat;
             var _this = this;
             var text = this.text();
 
-            this.text("");
+            this.text(null);
 
             function isNullOrWhiteSpace(str) {
                 return str === null || str.match(/^\s*$/) !== null;
             }
             if (_.isString(text) && !isNullOrWhiteSpace(text)) {
                 $.connection.hub.start().done(function () {
-                    _this._chatHubProxy.server.newChatMessage(text);
+                    _this._chatHubProxy.server.newChatMessage(_this._chatRoom, text);
                 });
             }
         };
