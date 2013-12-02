@@ -97,7 +97,7 @@ publish/
 
 # NuGet Packages Directory
 ## TODO: If you have NuGet Package Restore enabled, uncomment the next line
-#packages/
+packages/
 
 # Windows Azure Build Output
 csx
@@ -154,6 +154,7 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+
 /Online Chat/Online Chat/Scripts/Utils/CustomBindings.js.map
 /Online Chat/Online Chat/Scripts/Utils/CustomBindings.js
 /Online Chat/Online Chat/Scripts/Chat/Chat.js
