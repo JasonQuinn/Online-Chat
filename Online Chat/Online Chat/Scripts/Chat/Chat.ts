@@ -29,6 +29,9 @@ module OnlineChat {
             };
 
         }
+        public takeNewLine() {
+            this.text(this.text()+'\n');
+        }
         public sendMessage() {
             var text = this.text();
 

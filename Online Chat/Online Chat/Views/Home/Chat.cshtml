@@ -50,5 +50,5 @@
     </li>
 </ul>
 
-<textarea class="form-control" rows="3" placeholder="Send a message" data-bind="value: text, valueUpdate: 'keyup', ctrlReturnAction: function(){ $data.sendMessage() }"></textarea>
+<textarea class="form-control" rows="3" placeholder="Send a message" data-bind="value: text, valueUpdate: 'keyup', ctrlReturnAction: function(){ $data.takeNewLine() }, returnAction: function(){ $data.sendMessage() }"></textarea>
 <button type="button" class="btn btn-default" data-bind="click: function(){ $data.sendMessage() }">Send</button>

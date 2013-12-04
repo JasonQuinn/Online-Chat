@@ -8,7 +8,7 @@
             var value = ko.utils.unwrapObservable(valueAccessor());
 
             $(element).keydown(function (e) {
-                if (e.which === 13) {
+                if (e.which === 13 && e.ctrlKey === false && e.altKey === false) {
                     value(viewModel);
                 }
             });
@@ -21,7 +21,7 @@
             var value = ko.utils.unwrapObservable(valueAccessor());
 
             $(element).keydown(function (e) {
-                if (e.which === 13 && e.ctrlKey === true) {
+                if (e.which === 13 && e.ctrlKey === true && e.altKey === false) {
                     value(viewModel);
                 }
             });

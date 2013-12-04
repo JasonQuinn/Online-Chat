@@ -26,6 +26,9 @@ var OnlineChat;
                 _this.messages.push(ServerMessage.create(message));
             };
         }
+        Chat.prototype.takeNewLine = function () {
+            this.text(this.text() + '\n');
+        };
         Chat.prototype.sendMessage = function () {
             var _this = this;
             var text = this.text();
