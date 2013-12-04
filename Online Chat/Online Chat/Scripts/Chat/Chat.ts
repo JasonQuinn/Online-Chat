@@ -5,14 +5,22 @@ module OnlineChat {
     export class Chat {
         messages: KnockoutObservableArray<ServerMessage> = ko.observableArray();
         text = ko.observable("");
+        currentUser: string;
         private _chatRoom: string;
 
         private _chatHubProxy;
         // Constructor
-        constructor(chatRoom: string) {
+        constructor(chatRoom: string, currentUser: string) {
             this._chatRoom = chatRoom;
             this._chatHubProxy = (<any>$.connection).chatHub;
-            
+            this.currentUser = currentUser;
+
+            var changeTitle = (message: IServerMessage) => {
+                if (message.User !== this.currentUser) {
+                    (<any>$).titleAlert("New chat message!");
+                }
+            };
+
             $.connection.hub.start().done(() => {
                 // Wire up Send button to call NewContosoChatMessage on the server.
                 this._chatHubProxy.server.getAllMessages(this._chatRoom).done((data: IServerMessage[]) => {
@@ -26,6 +34,8 @@ module OnlineChat {
 
             this._chatHubProxy.client.addMessage = (message: IServerMessage) => {
                 this.messages.push(ServerMessage.create(message));
+
+                changeTitle(message);
             };
 
         }
@@ -53,12 +63,14 @@ module OnlineChat {
         User: string;
         Text: string;
         Time: string;
+        IsCurrentUser: boolean;
     }
 
     export class ServerMessage {
         User: string;
         Text: string;
         Time: Date;
+        IsCurrentUser: boolean;
         constructor() {
 
         }
@@ -67,6 +79,7 @@ module OnlineChat {
             newServerMessage.User = serverMessage.User;
             newServerMessage.Time = new Date(Date.parse(serverMessage.Time));
             newServerMessage.Text = serverMessage.Text;
+            newServerMessage.IsCurrentUser = serverMessage.IsCurrentUser;
             return newServerMessage;
         }
     }

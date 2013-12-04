@@ -12,12 +12,12 @@
         //    personName: ko.observable('Bob'),
         //    personAge: ko.observable(123)
         //};
-        var globalVariable = globalVariable || {};
-        globalVariable.currentUser = '@ViewBag.CurrentUser';
+        @*var globalVariable = globalVariable || {};
+        globalVariable.currentUser = '@ViewBag.CurrentUser';*@
 
         var chatRoom = '@ViewBag.ChatRoom';
 
-        ko.applyBindings(new OnlineChat.Chat(chatRoom));
+        ko.applyBindings(new OnlineChat.Chat(chatRoom, '@ViewBag.CurrentUser'));
     </script>
 }
 @section featured {
@@ -40,7 +40,7 @@
 <h3>Chat</h3>
 
 <ul class="messageList" data-bind="foreach: messages">
-    <li class="message" data-bind="css:{'message--right': User === globalVariable.currentUser, 'message--left': User !== globalVariable.currentUser}">
+    <li class="message" data-bind="css:{'message--right': User === $parent.currentUser, 'message--left': User !== $parent.currentUser}">
         <div class="message_text" data-bind="text: Text"></div>
         <div class="message_details">
             <small class="message_username" data-bind="text: User"></small>&nbsp;&bull;

@@ -4,12 +4,19 @@ var OnlineChat;
     // Class
     var Chat = (function () {
         // Constructor
-        function Chat(chatRoom) {
+        function Chat(chatRoom, currentUser) {
             var _this = this;
             this.messages = ko.observableArray();
             this.text = ko.observable("");
             this._chatRoom = chatRoom;
             this._chatHubProxy = ($.connection).chatHub;
+            this.currentUser = currentUser;
+
+            var changeTitle = function (message) {
+                if (message.User !== _this.currentUser) {
+                    ($).titleAlert("New chat message!");
+                }
+            };
 
             $.connection.hub.start().done(function () {
                 // Wire up Send button to call NewContosoChatMessage on the server.
@@ -24,6 +31,8 @@ var OnlineChat;
 
             this._chatHubProxy.client.addMessage = function (message) {
                 _this.messages.push(ServerMessage.create(message));
+
+                changeTitle(message);
             };
         }
         Chat.prototype.takeNewLine = function () {
@@ -56,6 +65,7 @@ var OnlineChat;
             newServerMessage.User = serverMessage.User;
             newServerMessage.Time = new Date(Date.parse(serverMessage.Time));
             newServerMessage.Text = serverMessage.Text;
+            newServerMessage.IsCurrentUser = serverMessage.IsCurrentUser;
             return newServerMessage;
         };
         return ServerMessage;

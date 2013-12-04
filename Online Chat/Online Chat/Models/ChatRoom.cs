@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
-using System.Linq;
-using System.Web;
 
 namespace Online_Chat.Models
 {
@@ -17,7 +15,6 @@ namespace Online_Chat.Models
         }
 
         public DbSet<ChatRoom> ChatRooms { get; set; }
-        public DbSet<Message> Messages { get; set; }
     }
 
     [Table("ChatRoom")]

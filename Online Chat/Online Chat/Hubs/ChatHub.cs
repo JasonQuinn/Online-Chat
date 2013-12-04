@@ -25,8 +25,13 @@ namespace Online_Chat.Hubs
 
             await Groups.Add(Context.ConnectionId, group.ToString());
             var owner = group.ToString();
-            var message = new Message { User = Context.User.Identity.Name, Text = messageText.Trim(), Time = DateTime.Now };
-            
+            var message = new Message
+            {
+                User = Context.User.Identity.Name,
+                Text = messageText.Trim(),
+                Time = DateTime.Now
+            };
+            //var userMessage = UserMessage.Create(message, Context.User.Identity);
             await Clients.Group(owner).addMessage(message);
 
             var chatRoom = await _chatRoomProvider.GetOrAddChatRoom(group);
@@ -38,7 +43,9 @@ namespace Online_Chat.Hubs
             await Groups.Add(Context.ConnectionId, group.ToString());
             var chatRoom = await _chatRoomProvider.GetChatRoom(group);
 
-            var result = chatRoom != null ? chatRoom.Messages : null;
+            var result = chatRoom != null
+                ? chatRoom.Messages
+                : null;
             return result;
         }
     }
