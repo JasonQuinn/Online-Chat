@@ -345,6 +345,7 @@
     <Content Include="Content\bootstrap\alerts.less" />
     <Content Include="Content\site.less" />
     <Content Include="Scripts\Chat\Chat.js.map" />
+    <Content Include="ConnectionStrings.config" />
     <None Include="Scripts\jquery-2.0.3.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
