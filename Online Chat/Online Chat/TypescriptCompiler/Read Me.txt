@@ -1,0 +1,7 @@
+Open C:\Program Files (x86)\Microsoft SDKs\TypeScript\0.9 and copy the contents into .\TypescriptCompiler
+
+
+
+
+The target files can be found in C:\Program Files (x86)\MSBuild\Microsoft\VisualStudio\v12.0\TypeScript
+
