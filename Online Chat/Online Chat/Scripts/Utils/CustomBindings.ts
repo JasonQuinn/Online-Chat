@@ -9,7 +9,7 @@
 
             $(element).keydown(function (e) {
                 if (e.which === 13 && e.ctrlKey === false && e.altKey === false) {
-                    value(viewModel);
+                    (<any>value)(viewModel);
                 }
             });
         }
@@ -22,7 +22,7 @@
 
             $(element).keydown(function (e) {
                 if (e.which === 13 && e.ctrlKey === true && e.altKey === false) {
-                    value(viewModel);
+                    (<any>value)(viewModel);
                 }
             });
         }
@@ -74,7 +74,7 @@
         update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
 
             var value = ko.utils.unwrapObservable(valueAccessor);
-            var dateString = getPrettyTime(value());
+            var dateString = getPrettyTime((<any>value)());
             $(element).text(dateString);
         }
     };

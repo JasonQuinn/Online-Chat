@@ -34,19 +34,24 @@
         var days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat'];
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+        //If in the last week
         if (date > new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)) {
+            //If not today
             if (date.getDay() !== today.getDay()) {
                 dateString += days[date.getDay()] + ' ';
             }
         } else {
+            //If different days
             if (date.getDate() !== today.getDate() || date.getMonth() !== today.getMonth() || date.getFullYear() !== today.getFullYear()) {
                 dateString += date.getDate() + ' ';
             }
 
+            //If different months
             if (date.getMonth() !== today.getMonth() || date.getFullYear() !== today.getFullYear()) {
                 dateString += months[date.getMonth()] + ' ';
             }
 
+            //If different years
             if (date.getFullYear() !== today.getFullYear()) {
                 dateString += date.getFullYear() + ' ';
             }

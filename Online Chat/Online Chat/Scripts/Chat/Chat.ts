@@ -3,7 +3,7 @@
 module OnlineChat {
     // Class
     export class Chat {
-        messages: KnockoutObservableArray<ServerMessage> = ko.observableArray();
+        messages: KnockoutObservableArray<ServerMessage> = ko.observableArray<ServerMessage>();
         text = ko.observable("");
         currentUser: string;
         private _chatRoom: string;

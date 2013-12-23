@@ -217,9 +217,9 @@ interface JQueryPromise<T> {
 
     // Because JQuery Promises Suck
     then<U>(onFulfill: (...values: any[]) => U, onReject?: (...reasons: any[]) => U, onProgress?: (...progression: any[]) => any): JQueryPromise<U>;
-	then<U>(onFulfill: (...values: any[]) => JQueryGenericPromise<U>, onReject?: (...reasons: any[]) => U, onProgress?: (...progression: any[]) => any): JQueryPromise<U>;
-	then<U>(onFulfill: (...values: any[]) => U, onReject?: (...reasons: any[]) => JQueryGenericPromise<U>, onProgress?: (...progression: any[]) => any): JQueryPromise<U>;
-	then<U>(onFulfill: (...values: any[]) => JQueryGenericPromise<U>, onReject?: (...reasons: any[]) => JQueryGenericPromise<U>, onProgress?: (...progression: any[]) => any): JQueryPromise<U>;
+    then<U>(onFulfill: (...values: any[]) => JQueryGenericPromise<U>, onReject?: (...reasons: any[]) => U, onProgress?: (...progression: any[]) => any): JQueryPromise<U>;
+    then<U>(onFulfill: (...values: any[]) => U, onReject?: (...reasons: any[]) => JQueryGenericPromise<U>, onProgress?: (...progression: any[]) => any): JQueryPromise<U>;
+    then<U>(onFulfill: (...values: any[]) => JQueryGenericPromise<U>, onReject?: (...reasons: any[]) => JQueryGenericPromise<U>, onProgress?: (...progression: any[]) => any): JQueryPromise<U>;
 }
 
 /*
@@ -337,38 +337,166 @@ interface JQueryParam {
     (obj: any, traditional: boolean): string;
 }
 
+/**
+ * The interface used to construct jQuery events (with $.Event). It is
+ * defined separately instead of inline in JQueryStatic to allow
+ * overriding the construction function with specific strings
+ * returning specific event objects.
+ */
+interface JQueryEventConstructor {
+    (name: string, eventProperties?: any): JQueryEventObject;
+    new (name: string, eventProperties?: any): JQueryEventObject;
+}
+
+/**
+ * The interface used to specify easing functions.
+ */
+interface JQueryEasing {
+    linear(p: number): number;
+    swing(p: number): number;
+}
+
 /*
     Static members of jQuery (those on $ and jQuery themselves)
 */
 interface JQueryStatic {
 
-    /****
-     AJAX
-    *****/
+    /**
+     * Perform an asynchronous HTTP (Ajax) request.
+     *
+     * @param settings A set of key/value pairs that configure the Ajax request. All settings are optional. A default can be set for any option with $.ajaxSetup().
+     */
     ajax(settings: JQueryAjaxSettings): JQueryXHR;
+    /**
+     * Perform an asynchronous HTTP (Ajax) request.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param settings A set of key/value pairs that configure the Ajax request. All settings are optional. A default can be set for any option with $.ajaxSetup().
+     */
     ajax(url: string, settings?: JQueryAjaxSettings): JQueryXHR;
 
-    ajaxPrefilter(dataTypes: string, handler: (opts: any, originalOpts: any, jqXHR: JQueryXHR) => any): any;
-    ajaxPrefilter(handler: (opts: any, originalOpts: any, jqXHR: JQueryXHR) => any): any;
+    /**
+     * Handle custom Ajax options or modify existing options before each request is sent and before they are processed by $.ajax().
+     *
+     * @param dataTypes An optional string containing one or more space-separated dataTypes
+     * @param handler A handler to set default values for future Ajax requests.
+     */
+    ajaxPrefilter(dataTypes: string, handler: (opts: any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) => any): void;
+    /**
+     * Handle custom Ajax options or modify existing options before each request is sent and before they are processed by $.ajax().
+     *
+     * @param handler A handler to set default values for future Ajax requests.
+     */
+    ajaxPrefilter(handler: (opts: any, originalOpts: JQueryAjaxSettings, jqXHR: JQueryXHR) => any): void;
 
     ajaxSettings: JQueryAjaxSettings;
 
-    ajaxSetup(): void;
+     /**
+      * Set default values for future Ajax requests. Its use is not recommended.
+      *
+      * @param options A set of key/value pairs that configure the default Ajax request. All options are optional.
+      */
     ajaxSetup(options: JQueryAjaxSettings): void;
 
-    get(url: string, data?: any, success?: any, dataType?: any): JQueryXHR;
-    getJSON(url: string, data?: any, success?: any): JQueryXHR;
-    getScript(url: string, success?: any): JQueryXHR;
+    /**
+     * Load data from the server using a HTTP GET request.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param success A callback function that is executed if the request succeeds.
+     * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, or html).
+     */
+    get(url: string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
+    /**
+     * Load data from the server using a HTTP GET request.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param data A plain object or string that is sent to the server with the request.
+     * @param success A callback function that is executed if the request succeeds.
+     * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, or html).
+     */
+    get(url: string, data?: Object, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
+    /**
+     * Load data from the server using a HTTP GET request.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param data A plain object or string that is sent to the server with the request.
+     * @param success A callback function that is executed if the request succeeds.
+     * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, or html).
+     */
+    get(url: string, data?: string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
+    /**
+     * Load JSON-encoded data from the server using a GET HTTP request.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param success A callback function that is executed if the request succeeds.
+     */
+    getJSON(url: string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any): JQueryXHR;
+    /**
+     * Load JSON-encoded data from the server using a GET HTTP request.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param data A plain object or string that is sent to the server with the request.
+     * @param success A callback function that is executed if the request succeeds.
+     */
+    getJSON(url: string, data?: Object, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any): JQueryXHR;
+    /**
+     * Load JSON-encoded data from the server using a GET HTTP request.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param data A plain object or string that is sent to the server with the request.
+     * @param success A callback function that is executed if the request succeeds.
+     */
+    getJSON(url: string, data?: string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any): JQueryXHR;
+    /**
+     * Load a JavaScript file from the server using a GET HTTP request, then execute it.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param success A callback function that is executed if the request succeeds.
+     */
+    getScript(url: string, success?: (script: string, textStatus: string, jqXHR: JQueryXHR) => any): JQueryXHR;
 
     param: JQueryParam;
 
-    post(url: string, data?: any, success?: any, dataType?: any): JQueryXHR;
+    /**
+     * Load data from the server using a HTTP POST request.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param success A callback function that is executed if the request succeeds. Required if dataType is provided, but can be null in that case.
+     * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, text, html).
+     */
+    post(url: string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
+    /**
+     * Load data from the server using a HTTP POST request.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param data A plain object or string that is sent to the server with the request.
+     * @param success A callback function that is executed if the request succeeds. Required if dataType is provided, but can be null in that case.
+     * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, text, html).
+     */
+    post(url: string, data?: Object, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
+    /**
+     * Load data from the server using a HTTP POST request.
+     *
+     * @param url A string containing the URL to which the request is sent.
+     * @param data A plain object or string that is sent to the server with the request.
+     * @param success A callback function that is executed if the request succeeds. Required if dataType is provided, but can be null in that case.
+     * @param dataType The type of data expected from the server. Default: Intelligent Guess (xml, json, script, text, html).
+     */
+    post(url: string, data?: string, success?: (data: any, textStatus: string, jqXHR: JQueryXHR) => any, dataType?: string): JQueryXHR;
 
-    // Callbacks
+    /**
+     * A multi-purpose callbacks list object that provides a powerful way to manage callback lists.
+     *
+     * @param flags An optional list of space-separated flags that change how the callback list behaves.
+     */
     Callbacks(flags?: string): JQueryCallback;
 
-    // Core
-    holdReady(hold: boolean): any;
+    /**
+     * Holds or releases the execution of jQuery's ready event.
+     *
+     * @param hold Indicates whether the ready hold is being requested or released
+     */
+    holdReady(hold: boolean): void;
 
     (selector: string, context?: any): JQuery;
     (element: Element): JQuery;
@@ -379,21 +507,55 @@ interface JQueryStatic {
     (array: any[]): JQuery;
     (): JQuery;
 
+    /**
+     * Relinquish jQuery's control of the $ variable.
+     *
+     * @param removeAll A Boolean indicating whether to remove all jQuery variables from the global scope (including jQuery itself).
+     */
     noConflict(removeAll?: boolean): Object;
 
-	when<T>(...deferreds: JQueryGenericPromise<T>[]): JQueryPromise<T>;
-	when<T>(...deferreds: T[]): JQueryPromise<T>;
-	when<T>(...deferreds: any[]): JQueryPromise<T>;
+    /**
+     * Provides a way to execute callback functions based on one or more objects, usually Deferred objects that represent asynchronous events.
+     *
+     * @param deferreds One or more Deferred objects, or plain JavaScript objects.
+     */
+    when<T>(...deferreds: JQueryGenericPromise<T>[]): JQueryPromise<T>;
+    /**
+     * Provides a way to execute callback functions based on one or more objects, usually Deferred objects that represent asynchronous events.
+     *
+     * @param deferreds One or more Deferred objects, or plain JavaScript objects.
+     */
+    when<T>(...deferreds: T[]): JQueryPromise<T>;
+    /**
+     * Provides a way to execute callback functions based on one or more objects, usually Deferred objects that represent asynchronous events.
+     *
+     * @param deferreds One or more Deferred objects, or plain JavaScript objects.
+     */
+    when<T>(...deferreds: any[]): JQueryPromise<T>;
 
-    // CSS
-    css(e: any, propertyName: string, value?: any): any;
-    css(e: any, propertyName: any, value?: any): any;
     cssHooks: { [key: string]: any; };
     cssNumber: any;
 
-    // Data
-    data(element: Element, key: string, value: any): any;
+    /**
+     * Store arbitrary data associated with the specified element. Returns the value that was set.
+     *
+     * @param element The DOM element to associate with the data.
+     * @param key A string naming the piece of data to set.
+     * @param value The new data value.
+     */
+    data<T>(element: Element, key: string, value: T): T;
+    /**
+     * Returns value at named data store for the element, as set by jQuery.data(element, name, value), or the full data store for the element.
+     *
+     * @param element The DOM element to associate with the data.
+     * @param key A string naming the piece of data to set.
+     */
     data(element: Element, key: string): any;
+    /**
+     * Returns value at named data store for the element, as set by jQuery.data(element, name, value), or the full data store for the element.
+     *
+     * @param element The DOM element to associate with the data.
+     */
     data(element: Element): any;
 
     dequeue(element: Element, queueName?: string): any;
@@ -415,10 +577,7 @@ interface JQueryStatic {
     proxy(fn: (...args: any[]) => any, context: any, ...args: any[]): any;
     proxy(context: any, name: string, ...args: any[]): any;
 
-    Event: {
-        (name: string, eventProperties?: any): JQueryEventObject;
-        new (name: string, eventProperties?: any): JQueryEventObject;
-    };
+    Event: JQueryEventConstructor;
 
     // Internals
     error(message: any): JQuery;
@@ -469,8 +628,12 @@ interface JQueryStatic {
 
     parseJSON(json: string): any;
 
-    //FIXME: This should return an XMLDocument
-    parseXML(data: string): any;
+    /**
+     * Parses a string into an XML document.
+     *
+     * @param dataa well-formed XML string to be parsed
+     */
+    parseXML(data: string): XMLDocument;
 
     queue(element: Element, queueName: string, newQueue: any[]): JQuery;
 
@@ -481,16 +644,17 @@ interface JQueryStatic {
     unique(arr: any[]): any[];
 
     /**
-    * Parses a string into an array of DOM nodes.
-    *
-    * @param data HTML string to be parsed
-    * @param context DOM element to serve as the context in which the HTML fragment will be created
-    * @param keepScripts A Boolean indicating whether to include scripts passed in the HTML string
-    */
+     * Parses a string into an array of DOM nodes.
+     *
+     * @param data HTML string to be parsed
+     * @param context DOM element to serve as the context in which the HTML fragment will be created
+     * @param keepScripts A Boolean indicating whether to include scripts passed in the HTML string
+     */
     parseHTML(data: string, context?: HTMLElement, keepScripts?: boolean): any[];
 
     Animation(elem: any, properties: any, options: any): any;
 
+    easing: JQueryEasing;
 }
 
 /*
@@ -520,8 +684,8 @@ interface JQuery {
 
     attr(attributeName: string): string;
     attr(attributeName: string, value: any): JQuery;
-    attr(map: { [key: string]: any; }): JQuery;
     attr(attributeName: string, func: (index: any, attr: any) => any): JQuery;
+    attr(map: any): JQuery;
 
     hasClass(className: string): boolean;
 
@@ -552,12 +716,60 @@ interface JQuery {
     val(value: number): JQuery;
     val(func: (index: any, value: any) => any): JQuery;
 
-    // CSS
+    /**
+     * Get the value of style properties for the first element in the set of matched elements.
+     *
+     * @param propertyName A CSS property.
+     */
     css(propertyName: string): string;
-    css(propertyNames: string[]): string;
-    css(properties: any): JQuery;
-    css(propertyName: string, value: any): JQuery;
-    css(propertyName: any, value: any): JQuery;
+    /**
+     * Set one or more CSS properties for the set of matched elements.
+     *
+     * @param propertyName A CSS property name.
+     * @param value A value to set for the property.
+     */
+    css(propertyName: string, value: string): JQuery;
+    /**
+     * Set one or more CSS properties for the set of matched elements.
+     *
+     * @param propertyName A CSS property name.
+     * @param value A value to set for the property.
+     */
+    css(propertyName: string, value: number): JQuery;
+    /**
+     * Set one or more CSS properties for the set of matched elements.
+     *
+     * @param propertyName A CSS property name.
+     * @param value A value to set for the property.
+     */
+    css(propertyName: string, value: string[]): JQuery;
+    /**
+     * Set one or more CSS properties for the set of matched elements.
+     *
+     * @param propertyName A CSS property name.
+     * @param value A value to set for the property.
+     */
+    css(propertyName: string, value: number[]): JQuery;
+    /**
+     * Set one or more CSS properties for the set of matched elements.
+     *
+     * @param propertyName A CSS property name.
+     * @param value A function returning the value to set. this is the current element. Receives the index position of the element in the set and the old value as arguments.
+     */
+    css(propertyName: string, value: (index: number, value: string) => string): JQuery;
+    /**
+     * Set one or more CSS properties for the set of matched elements.
+     *
+     * @param propertyName A CSS property name.
+     * @param value A function returning the value to set. this is the current element. Receives the index position of the element in the set and the old value as arguments.
+     */
+    css(propertyName: string, value: (index: number, value: number) => number): JQuery;
+    /**
+     * Set one or more CSS properties for the set of matched elements.
+     *
+     * @param properties An object of property-value pairs to set.
+     */
+    css(properties: Object): JQuery;
 
     height(): number;
     height(value: number): JQuery;
@@ -745,7 +957,7 @@ interface JQuery {
      * @param eventData An object containing data that will be passed to the event handler.
      * @param handler A function to execute each time the event is triggered.
      */
-    focusin(eventData: any, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    focusin(eventData: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
 
     /**
      * Bind an event handler to the "focusout" JavaScript event
@@ -759,7 +971,7 @@ interface JQuery {
      * @param eventData An object containing data that will be passed to the event handler.
      * @param handler A function to execute each time the event is triggered.
      */
-    focusout(eventData: any, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    focusout(eventData: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
 
     /**
      * Bind two handlers to the matched elements, to be executed when the mouse pointer enters and leaves the elements.
@@ -859,7 +1071,7 @@ interface JQuery {
      * @param eventData An object containing data that will be passed to the event handler.
      * @param handler A function to execute when the event is triggered.
      */
-    mousedown(eventData: any, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mousedown(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
 
     /**
      * Trigger the "mouseenter" event on an element.
@@ -877,7 +1089,7 @@ interface JQuery {
      * @param eventData An object containing data that will be passed to the event handler.
      * @param handler A function to execute when the event is triggered.
      */
-    mouseenter(eventData: any, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseenter(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
 
     /**
      * Trigger the "mouseleave" event on an element.
@@ -895,7 +1107,7 @@ interface JQuery {
      * @param eventData An object containing data that will be passed to the event handler.
      * @param handler A function to execute when the event is triggered.
      */
-    mouseleave(eventData: any, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseleave(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
 
     /**
      * Trigger the "mousemove" event on an element.
@@ -913,7 +1125,7 @@ interface JQuery {
      * @param eventData An object containing data that will be passed to the event handler.
      * @param handler A function to execute when the event is triggered.
      */
-    mousemove(eventData: any, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mousemove(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
 
     /**
      * Trigger the "mouseout" event on an element.
@@ -931,7 +1143,7 @@ interface JQuery {
      * @param eventData An object containing data that will be passed to the event handler.
      * @param handler A function to execute when the event is triggered.
      */
-    mouseout(eventData: any, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseout(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
 
     /**
      * Trigger the "mouseover" event on an element.
@@ -949,7 +1161,7 @@ interface JQuery {
      * @param eventData An object containing data that will be passed to the event handler.
      * @param handler A function to execute when the event is triggered.
      */
-    mouseover(eventData: any, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseover(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
 
     /**
      * Trigger the "mouseup" event on an element.
@@ -967,7 +1179,7 @@ interface JQuery {
      * @param eventData An object containing data that will be passed to the event handler.
      * @param handler A function to execute when the event is triggered.
      */
-    mouseup(eventData: any, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
+    mouseup(eventData: Object, handler: (eventObject: JQueryMouseEventObject) => any): JQuery;
 
     /**
      * Remove an event handler.
@@ -984,6 +1196,13 @@ interface JQuery {
     /**
      * Remove an event handler.
      *
+     * @param events One or more space-separated event types and optional namespaces, or just namespaces, such as "click", "keydown.myPlugin", or ".myPlugin".
+     * @param handler A handler function previously attached for the event(s), or the special value false.
+     */
+    off(events: string, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    /**
+     * Remove an event handler.
+     *
      * @param events An object where the string keys represent one or more space-separated event types and optional namespaces, and the values represent handler functions previously attached for the event(s).
      * @param selector A selector which should match the one originally passed to .on() when attaching event handlers.
      */
@@ -993,9 +1212,9 @@ interface JQuery {
      * Attach an event handler function for one or more events to the selected elements.
      *
      * @param events One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".
-     * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false.
+     * @param handler A function to execute when the event is triggered. The value false is also allowed as a shorthand for a function that simply does return false. Rest parameter args is for optional parameters passed to jQuery.trigger(). Note that the actual parameters on the event handler function must be marked as optional (? syntax).
      */
-    on(events: string, handler: (eventObject: JQueryEventObject) => any): JQuery;
+    on(events: string, handler: (eventObject: JQueryEventObject, ...args: any[]) => any): JQuery;
     /**
      * Attach an event handler function for one or more events to the selected elements.
      *
@@ -1073,14 +1292,59 @@ interface JQuery {
      */
     ready(handler: Function): JQuery;
 
+    /**
+     * Trigger the "resize" event on an element.
+     */
+    resize(): JQuery;
+    /**
+     * Bind an event handler to the "resize" JavaScript event.
+     *
+     * @param handler A function to execute each time the event is triggered.
+     */
     resize(handler: (eventObject: JQueryEventObject) => any): JQuery;
-    resize(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    /**
+     * Bind an event handler to the "resize" JavaScript event.
+     *
+     * @param eventData An object containing data that will be passed to the event handler.
+     * @param handler A function to execute each time the event is triggered.
+     */
+    resize(eventData: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
 
+    /**
+     * Trigger the "scroll" event on an element.
+     */
+    scroll(): JQuery;
+    /**
+     * Bind an event handler to the "scroll" JavaScript event.
+     *
+     * @param handler A function to execute each time the event is triggered.
+     */
     scroll(handler: (eventObject: JQueryEventObject) => any): JQuery;
-    scroll(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    /**
+     * Bind an event handler to the "scroll" JavaScript event.
+     *
+     * @param eventData An object containing data that will be passed to the event handler.
+     * @param handler A function to execute each time the event is triggered.
+     */
+    scroll(eventData: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
 
+    /**
+     * Trigger the "select" event on an element.
+     */
+    select(): JQuery;
+    /**
+     * Bind an event handler to the "select" JavaScript event.
+     *
+     * @param handler A function to execute each time the event is triggered.
+     */
     select(handler: (eventObject: JQueryEventObject) => any): JQuery;
-    select(eventData?: any, handler?: (eventObject: JQueryEventObject) => any): JQuery;
+    /**
+     * Bind an event handler to the "select" JavaScript event.
+     *
+     * @param eventData An object containing data that will be passed to the event handler.
+     * @param handler A function to execute each time the event is triggered.
+     */
+    select(eventData: Object, handler: (eventObject: JQueryEventObject) => any): JQuery;
 
     /**
      * Trigger the "submit" event on an element.

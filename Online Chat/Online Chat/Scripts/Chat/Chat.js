@@ -9,12 +9,12 @@ var OnlineChat;
             this.messages = ko.observableArray();
             this.text = ko.observable("");
             this._chatRoom = chatRoom;
-            this._chatHubProxy = ($.connection).chatHub;
+            this._chatHubProxy = $.connection.chatHub;
             this.currentUser = currentUser;
 
             var changeTitle = function (message) {
                 if (message.User !== _this.currentUser) {
-                    ($).titleAlert("New chat message!");
+                    $.titleAlert("New chat message!");
                 }
             };
 
