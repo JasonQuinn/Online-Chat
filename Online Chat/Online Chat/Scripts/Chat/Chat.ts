@@ -1,6 +1,7 @@
 /// <reference path="../typings/underscore/underscore.d.ts" />
 /// <reference path="../typings/jquery/jquery.d.ts" />
 /// <reference path="../typings/knockout/knockout.d.ts" />
+/// <reference path="../typings/signalr/signalr.d.ts" />
 
 // Module
 module OnlineChat {
@@ -15,7 +16,7 @@ module OnlineChat {
         // Constructor
         constructor(chatRoom: string, currentUser: string) {
             this._chatRoom = chatRoom;
-            this._chatHubProxy = (<any>$).connection.chatHub;
+            this._chatHubProxy = (<any>$.connection).chatHub;
             this.currentUser = currentUser;
 
             var changeTitle = (message: IServerMessage) => {
@@ -24,7 +25,7 @@ module OnlineChat {
                 }
             };
 
-            (<any>$).connection.hub.start().done(() => {
+            $.connection.hub.start().done(() => {
                 // Wire up Send button to call NewContosoChatMessage on the server.
                 this._chatHubProxy.server.getAllMessages(this._chatRoom).done((data: IServerMessage[]) => {
                     if (data !== undefined) {
@@ -54,7 +55,7 @@ module OnlineChat {
                 return str === null || str.match(/^\s*$/) !== null;
             }
             if (_.isString(text) && !isNullOrWhiteSpace(text)) {
-                (<any>$).connection.hub.start().done(() => {
+                $.connection.hub.start().done(() => {
                     this._chatHubProxy.server.newChatMessage(this._chatRoom, text);
                 });
             }
